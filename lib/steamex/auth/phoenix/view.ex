@@ -27,9 +27,19 @@ defmodule Steamex.Auth.Phoenix.View do
 
     helpers = Module.concat(phoenix_controller.router_module(conn), Helpers)
 
-    realm = helpers.url(conn)
+    realm =
+    if Keyword.has_key?(options, :realm) do
+      options[:realm]
+    else
+      helpers.url(conn)
+    end
 
-    return_to = apply(helpers, options[:return_to_helper], [conn, []])
+    return_to =
+    if Keyword.has_key?(options, :return_to) do
+      options[:return_to]
+    else
+      apply(helpers, options[:return_to_helper], [conn, []])
+    end
 
     return_to =
       if redirect_to = options[:redirect_to] do
